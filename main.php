@@ -118,8 +118,11 @@ class yuki_comment_form
         if (isset($_POST['showtext_options'])) {
             $opt = $_POST['showtext_options'];
             update_option('showtext_options', $opt);
-            _e('保存しました');
-        } ?>
+        }
+
+        $opt = get_option('showtext_options');
+        $show_text = isset($opt) ? $opt : null;
+?>
 <h2>LineNotify<?php _e('設定') ?></h2>
 <p>LineNotify<?php _e('に通知を送ります。送信する先の') ?>token<?php _e('を入力してください。') ?></p>
 <p><?php _e('空白にするとオフにします') ?></p>
@@ -129,6 +132,11 @@ class yuki_comment_form
     <input type="submit" name="Submit" class="button-primary" value="<?php _e('変更を保存') ?>" />
 </form>
 <?php
+        if (isset($_POST['showtext_options'])) {
+        ?>
+<p><?php _e('保存しました'); ?></p>
+<?php
+        }
     }
 }
 $showtext = new yuki_comment_form;
