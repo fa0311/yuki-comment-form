@@ -85,8 +85,6 @@ class yuki_comment_form
         if ($_POST["csrf_token"] != $_SESSION["csrf_token_" . $_POST["csrf_time"]]) {
             $this->notify_message(_("判定：スパム"));
             $this->notify_message(_("csrfトークンエラー"));
-            $this->notify_message($_POST["csrf_token"]);
-            $this->notify_message($_SESSION["csrf_token_" . $_POST["csrf_time"]]);
             return "spam";
         }
         if ($defaults["comment_author"] != null) {
