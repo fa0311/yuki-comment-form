@@ -72,7 +72,7 @@ class yuki_comment_form
         $defaults['cancel_reply_link'] = _('返信をキャンセル');
         $defaults['submit_field'] .= '<input type="hidden" name="csrf_token" value="' . $this->csrf_token . '">';
         $defaults['submit_field'] .= '<input type="hidden" name="csrf_time" value="' . $this->time . '">';
-        $defaults['logged_in_as'] = '<p class="logged-in-as"><a href="" aria-label=" プロフィールを編集">ログイン中</a>のため現在コメント機能は使用できません。<a href="https://fnjpnews.com/wp-login.php?action=logout&amp;redirect_to=https%3A%2F%2Ffnjpnews.com%2FNews%2F7888&amp;_wpnonce=2dca9fc999">ログアウトしますか？</a></p>';
+        $defaults['logged_in_as'] = '<p class="logged-in-as"><a href="" aria-label=" ' . _("プロフィールを編集") . '">' . _("ログイン中</a>のため現在コメント機能は使用できません。") . '<a href="https://fnjpnews.com/wp-login.php?action=logout&amp;redirect_to=https%3A%2F%2Ffnjpnews.com%2FNews%2F7888&amp;_wpnonce=2dca9fc999">' . _("ログアウトしますか？") . '</a></p>';
         return $defaults;
     }
     function comment_form_notice($commentdata, $defaults)
