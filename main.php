@@ -15,9 +15,9 @@ class yuki_comment_form
         $this->csrf_token_legacy = $_SESSION["csrf_token"];
         $this->csrf_token = uniqid('', true);
         $_SESSION["csrf_token"] = $this->csrf_token;
-        add_filter('comment_form_default_fields', array($this, 'comment_form_remove'));
-        add_filter('comment_form_defaults', array($this, 'comment_form_change'));
-        add_filter('pre_comment_approved', array($this, 'comment_form_notice'), 9999, 2);
+        add_filter('comment_form_default_fields', array($this, 'comment_form_remove'), 999999, 2);
+        add_filter('comment_form_defaults', array($this, 'comment_form_change'), 999999, 2);
+        add_filter('pre_comment_approved', array($this, 'comment_form_notice'), 999999, 2);
         add_filter('wp_enqueue_scripts', array($this, 'custom_stylesheet'));
         add_action('admin_menu', array($this, 'add_pages'));
     }
@@ -61,15 +61,16 @@ class yuki_comment_form
         if (isset($arg['email'])) $arg['email'] = '';
         if (isset($arg['author'])) $arg['author'] = '';
         if (isset($arg['cookies'])) $arg['cookies'] = '';
-        $arg['csrf_token'] = '<input type="hidden" name="csrf_token" value="' . $this->csrf_token . '">';
         return $arg;
     }
 
+
     function comment_form_change($defaults)
     {
-        $defaults['comment_notes_before'] = '<p class="comment-notes"><span id="email-notes">' . _('URLは使用禁止です。') . '</span></p>';
+        // $defaults['comment_notes_before'] = '<p class="comment-notes"><span id="email-notes">' . _('URLは使用禁止です。') . '</span></p>';
         $defaults['title_reply_to'] = _('返信する');
         $defaults['cancel_reply_link'] = _('返信をキャンセル');
+        $defaults['submit_field'] .= '<input type="hidden" name="csrf_token" value="' . $this->csrf_token . '">';
         return $defaults;
     }
     function comment_form_notice($commentdata, $defaults)
