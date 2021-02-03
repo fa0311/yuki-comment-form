@@ -3,9 +3,7 @@
 WordPress のコメント欄をシンプルにしスパム対策と CSRF 対策を導入します<br>
 このプラグインは多言語対応です<br>
 
-<!--
-[詳しくはこちら](https://blog.yuki0311.com/youtube-feature-rich-v1/ "詳しくはこちら")
--->
+[詳しくはこちら](https://blog.yuki0311.com/wp-anti-spam-plugin/ "詳しくはこちら")
 
 # Installation
 
