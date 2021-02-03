@@ -12,12 +12,12 @@ class yuki_comment_form
     function __construct()
     {
         if (!session_id()) session_start();
-        $this->csrf_token_legacy = $_SESSION["csrf_token"];
+        $this->time = (string)time();
         $this->csrf_token = uniqid('', true);
-        $_SESSION["csrf_token"] = $this->csrf_token;
+        $_SESSION["csrf_token_" . $this->time] = $this->csrf_token;
         add_filter('comment_form_default_fields', array($this, 'comment_form_remove'), 999999, 2);
         add_filter('comment_form_defaults', array($this, 'comment_form_change'), 999999, 2);
-        add_filter('pre_comment_approved', array($this, 'comment_form_notice'), 999999, 2);
+        add_filter('pre_comment_approved', array($this, 'comment_form_notice'), 0, 2);
         add_filter('wp_enqueue_scripts', array($this, 'custom_stylesheet'));
         add_action('admin_menu', array($this, 'add_pages'));
     }
@@ -71,6 +71,7 @@ class yuki_comment_form
         $defaults['title_reply_to'] = _('返信する');
         $defaults['cancel_reply_link'] = _('返信をキャンセル');
         $defaults['submit_field'] .= '<input type="hidden" name="csrf_token" value="' . $this->csrf_token . '">';
+        $defaults['submit_field'] .= '<input type="hidden" name="csrf_time" value="' . $this->time . '">';
         return $defaults;
     }
     function comment_form_notice($commentdata, $defaults)
@@ -78,26 +79,34 @@ class yuki_comment_form
         $this->notify_message(_("ステータス") . "：" . $commentdata . "\n" . _("記事") . "url：" . home_url('/') . "?p=" . $defaults["comment_post_ID"] . "\nip" . _("アドレス") . "：" . $defaults["comment_author_IP"] . "\n" . _("コメント") . "：" . $defaults["comment_content"]);
         if ($commentdata != 1) {
             $this->notify_message(_("判定：スパム"));
+            $this->notify_message(_("他プラグインの判定"));
             return "spam";
         }
-        if ($_POST["csrf_token"] != $this->csrf_token_legacy) {
+        if ($_POST["csrf_token"] != $_SESSION["csrf_token_" . $_POST["csrf_time"]]) {
             $this->notify_message(_("判定：スパム"));
+            $this->notify_message(_("csrfトークンエラー"));
+            $this->notify_message($_POST["csrf_token"]);
+            $this->notify_message($_SESSION["csrf_token_" . $_POST["csrf_time"]]);
             return "spam";
         }
         if ($defaults["comment_author"] != null) {
             $this->notify_message(_("判定：スパム"));
+            $this->notify_message(_("本来入力されていないはずのフォームが入力されている 該当id:comment_author"));
             return "spam";
         }
         if ($defaults["comment_author_email"] != null) {
             $this->notify_message(_("判定：スパム"));
+            $this->notify_message(_("本来入力されていないはずのフォームが入力されている 該当id:comment_author_email"));
             return "spam";
         }
         if ($defaults["comment_author_url"] != null) {
             $this->notify_message(_("判定：スパム"));
+            $this->notify_message(_("本来入力されていないはずのフォームが入力されている 該当id:comment_author_url"));
             return "spam";
         }
         if ($defaults["user_ID"] != null) {
             $this->notify_message(_("判定：スパム"));
+            $this->notify_message(_("本来入力されていないはずのフォームが入力されている 該当id:user_ID"));
             return "spam";
         }
         $this->notify_message(_("判定：認証"));
